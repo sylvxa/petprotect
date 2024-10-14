@@ -1,0 +1,16 @@
+# PetProtect
+
+Protect tamed mobs from PvP.
+
+![PetProtect Icon](src/main/resources/assets/petprotect/icon.png)
+
+## Features
+
+- Allows disabling tamed pet player damage
+
+## Configuration
+- `prevent_pet_damage`: Global toggle for the mod
+- `allow_owner_damage`: Decides whether owners should be able to damage their own pets
+- `ignore_creative`: Decides whether creative players can damage pets regardless of other rules 
+
+*The configuration (`config/petprotect.json`) is loaded on server start and there is currently no way to change or reload options without restarting.*

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "petprotect",
+  "version": "${version}",
+  "name": "petprotect",
+  "description": "Protect tamed mobs from PvP.",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/petprotect/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "lol.sylvie.petprotect.PetProtect"
+    ]
+  },
+  "mixins": [
+    "petprotect.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "~1.21"
+  }
+}
