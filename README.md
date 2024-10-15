@@ -6,7 +6,7 @@ Protect tamed mobs from PvP.
 
 ## Features
 
-- Allows disabling tamed pet player damage
+- Allows disabling tamed pet player damage and attacks
 
 ## Configuration
 - `prevent_pet_damage`: Global toggle for the mod
