@@ -14,11 +14,12 @@ import java.io.File;
 public class PetProtect implements ModInitializer {
     public static String MOD_ID = "petprotect";
     public static Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static ConfigInstance config;
 
     @Override
     public void onInitialize() {
         File configFile = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID + ".json").toFile();
-        ConfigInstance config = ConfigInstance.fromFile(configFile);
+        config = ConfigInstance.fromFile(configFile);
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (player.isSpectator() || (config.shouldIgnoreCreative() && player.isCreative()) || !config.preventPetDamage()) return ActionResult.PASS;

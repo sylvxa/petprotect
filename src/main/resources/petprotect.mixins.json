@@ -4,6 +4,8 @@
   "package": "lol.sylvie.petprotect.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AttackWithOwnerGoalMixin",
+    "TrackOwnerAttackerGoalMixin"
   ],
   "client": [
   ],

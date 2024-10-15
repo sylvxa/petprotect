@@ -15,6 +15,9 @@ public class ConfigInstance {
     @SerializedName("prevent_pet_damage")
     boolean preventPetDamage = true;
 
+    @SerializedName("prevent_pet_attack")
+    boolean preventPetAttack = true;
+
     @SerializedName("allow_owner_damage")
     boolean allowOwnerDamage = false;
 
@@ -42,6 +45,10 @@ public class ConfigInstance {
 
     public boolean preventPetDamage() {
         return preventPetDamage;
+    }
+
+    public boolean preventPetAttack() {
+        return preventPetAttack;
     }
 
     public boolean allowOwnerDamage() {
