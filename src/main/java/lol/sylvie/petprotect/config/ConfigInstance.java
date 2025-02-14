@@ -2,6 +2,7 @@ package lol.sylvie.petprotect.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import lol.sylvie.petprotect.PetProtect;
 
@@ -27,7 +28,7 @@ public class ConfigInstance {
     public static ConfigInstance fromFile(File file) {
         try (FileReader reader = new FileReader(file)) {
             return GSON.fromJson(reader, ConfigInstance.class);
-        } catch (IOException readException) {
+        } catch (IOException | JsonSyntaxException readException) {
             PetProtect.LOGGER.warn("Couldn't load config for one reason or another. (ignore if this is the first time loading PetProtect)");
             ConfigInstance instance = new ConfigInstance();
             instance.writeToFile(file);

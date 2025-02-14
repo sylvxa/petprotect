@@ -20,6 +20,7 @@ public class PetProtect implements ModInitializer {
     public void onInitialize() {
         File configFile = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID + ".json").toFile();
         config = ConfigInstance.fromFile(configFile);
+        config.writeToFile(configFile);
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (player.isSpectator() || (config.shouldIgnoreCreative() && player.isCreative()) || !config.preventPetDamage()) return ActionResult.PASS;
@@ -31,8 +32,5 @@ public class PetProtect implements ModInitializer {
             }
             return ActionResult.PASS;
         });
-
-        // If the mod updates and a new config option is added, it won't show up in the config unless I do this :P
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> config.writeToFile(configFile)));
     }
 }
