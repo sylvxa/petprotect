@@ -25,7 +25,7 @@ public class PetProtect implements ModInitializer {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (player.isSpectator() || (config.shouldIgnoreCreative() && player.isCreative()) || !config.preventPetDamage()) return ActionResult.PASS;
             if (entity instanceof TameableEntity tameable) {
-                if (tameable.getOwnerUuid() == null) return ActionResult.PASS; // Mob is not tamed
+                if (tameable.getOwnerReference() == null) return ActionResult.PASS; // Mob is not tamed
                 if (!(tameable.isOwner(player) && config.allowOwnerDamage())) {
                     return ActionResult.FAIL;
                 }
