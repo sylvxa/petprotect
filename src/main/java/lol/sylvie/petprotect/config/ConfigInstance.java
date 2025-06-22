@@ -19,6 +19,9 @@ public class ConfigInstance {
     @SerializedName("prevent_pet_death")
     boolean preventPetDeath = true;
 
+    @SerializedName("apply_totem_effects")
+    boolean applyTotemEffects = false;
+
     @SerializedName("prevent_pet_attack")
     boolean preventPetAttack = true;
 
@@ -53,6 +56,10 @@ public class ConfigInstance {
 
     public boolean preventPetDeath() {
         return preventPetDeath;
+    }
+
+    public boolean applyTotemEffects() {
+        return applyTotemEffects;
     }
 
     public boolean preventPetAttack() {

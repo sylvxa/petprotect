@@ -11,6 +11,7 @@ Protect tamed mobs from PvP.
 ## Configuration
 - `prevent_pet_damage`: Global toggle for the mod
 - `prevent_pet_death`: Decides whether pets will be able to die under any circumstances
+- `apply_totem_effects`: Decides whether Totem of Undying effects will be applied when preventing the death of a pet
 - `prevent_pet_attack`: Decides whether pets will attack players
 - `allow_owner_damage`: Decides whether owners should be able to damage (and kill!) their own pets regardless of other rules
 - `ignore_creative`: Decides whether creative players can damage pets regardless of other rules

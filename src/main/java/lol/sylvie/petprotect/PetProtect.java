@@ -41,14 +41,16 @@ public class PetProtect implements ModInitializer {
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, damageSource, damageAmount) -> {
             if (!config.preventPetDamage() || !config.preventPetDeath()) return true;
-            if (damageSource.getAttacker() instanceof PlayerEntity player && ((config.shouldIgnoreCreative() && player.isCreative()) || player.isSpectator())) return true;
+            if (damageSource.isSourceCreativePlayer() && config.shouldIgnoreCreative()) return true;
             if (entity instanceof TameableEntity tameable) {
                 if (tameable.getOwnerReference() == null) return true; // Mob is not tamed
                 if (!(damageSource.getAttacker() instanceof PlayerEntity player && tameable.isOwner(player) && config.allowOwnerDamage())) {
-                    // we're not allowing this death: reset health to full, and apply a Totem of Undying effect
+                    // we're not allowing this death: reset health to full
                     entity.setHealth(entity.getMaxHealth());
-                    DeathProtectionComponent.TOTEM_OF_UNDYING.applyDeathEffects(new ItemStack(Items.TOTEM_OF_UNDYING), entity);
-                    entity.getWorld().sendEntityStatus(entity, EntityStatuses.USE_TOTEM_OF_UNDYING);
+                    if (config.applyTotemEffects()) {
+                        DeathProtectionComponent.TOTEM_OF_UNDYING.applyDeathEffects(new ItemStack(Items.TOTEM_OF_UNDYING), entity);
+                        entity.getWorld().sendEntityStatus(entity, EntityStatuses.USE_TOTEM_OF_UNDYING);
+                    }
                     return false;
                 }
             }
