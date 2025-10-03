@@ -49,7 +49,7 @@ public class PetProtect implements ModInitializer {
                     entity.setHealth(entity.getMaxHealth());
                     if (config.applyTotemEffects()) {
                         DeathProtectionComponent.TOTEM_OF_UNDYING.applyDeathEffects(new ItemStack(Items.TOTEM_OF_UNDYING), entity);
-                        entity.getWorld().sendEntityStatus(entity, EntityStatuses.USE_TOTEM_OF_UNDYING);
+                        entity.getEntityWorld().sendEntityStatus(entity, EntityStatuses.USE_TOTEM_OF_UNDYING);
                     }
                     return false;
                 }
