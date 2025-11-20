@@ -14,7 +14,10 @@ public class ConfigInstance {
             .create();
 
     @SerializedName("prevent_pet_damage")
-    boolean preventPetDamage = true;
+    boolean preventPetDamage = true; // direct melee (AttackEntityCallback)
+
+    @SerializedName("prevent_indirect_pet_damage")
+    boolean preventIndirectPetDamage = true; // new: projectiles / other indirect sources
 
     @SerializedName("prevent_pet_death")
     boolean preventPetDeath = true;
@@ -33,9 +36,12 @@ public class ConfigInstance {
 
     public static ConfigInstance fromFile(File file) {
         try (FileReader reader = new FileReader(file)) {
-            return GSON.fromJson(reader, ConfigInstance.class);
+            ConfigInstance instance = GSON.fromJson(reader, ConfigInstance.class);
+            // Ensure new fields have defaults if absent
+            if (instance == null) instance = new ConfigInstance();
+            return instance;
         } catch (IOException | JsonSyntaxException readException) {
-            PetProtect.LOGGER.warn("Couldn't load config for one reason or another. (ignore if this is the first time loading PetProtect)");
+            PetProtect.LOGGER.warn("Couldn't load config (creating default).");
             ConfigInstance instance = new ConfigInstance();
             instance.writeToFile(file);
             return instance;
@@ -52,6 +58,10 @@ public class ConfigInstance {
 
     public boolean preventPetDamage() {
         return preventPetDamage;
+    }
+
+    public boolean preventIndirectPetDamage() {
+        return preventIndirectPetDamage;
     }
 
     public boolean preventPetDeath() {

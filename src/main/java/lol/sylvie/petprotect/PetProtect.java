@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.component.type.DeathProtectionComponent;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +29,7 @@ public class PetProtect implements ModInitializer {
         config = ConfigInstance.fromFile(configFile);
         config.writeToFile(configFile);
 
+        // Block direct melee attacks via interaction callback
         AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (player.isSpectator() || (config.shouldIgnoreCreative() && player.isCreative()) || !config.preventPetDamage()) return ActionResult.PASS;
             if (entity instanceof TameableEntity tameable) {
@@ -39,6 +41,7 @@ public class PetProtect implements ModInitializer {
             return ActionResult.PASS;
         });
 
+        // Prevent death when configured (already present)
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, damageSource, damageAmount) -> {
             if (!config.preventPetDamage() || !config.preventPetDeath()) return true;
             if (damageSource.isSourceCreativePlayer() && config.shouldIgnoreCreative()) return true;
@@ -55,6 +58,23 @@ public class PetProtect implements ModInitializer {
                 }
             }
             return true;
+        });
+
+        // Block indirect player damage (projectiles, splash, etc.) separately
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+            if (!config.preventIndirectPetDamage()) return true;
+            if (!(entity instanceof TameableEntity tameable)) return true;
+            if (tameable.getOwnerReference() == null) return true;
+
+            Entity attacker = source.getAttacker();
+            Entity origin = source.getSource();
+            PlayerEntity player = attacker instanceof PlayerEntity p ? p :
+                                  origin instanceof PlayerEntity p2 ? p2 : null;
+            if (player == null) return true;
+            if (player.isCreative() && config.shouldIgnoreCreative()) return true;
+            if (tameable.isOwner(player) && config.allowOwnerDamage()) return true;
+
+            return false; // cancel indirect damage
         });
     }
 }
