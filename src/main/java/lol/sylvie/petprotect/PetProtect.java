@@ -5,13 +5,13 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.component.type.DeathProtectionComponent;
-import net.minecraft.entity.EntityStatuses;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityEvent;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.DeathProtection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,27 +29,27 @@ public class PetProtect implements ModInitializer {
         config.writeToFile(configFile);
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
-            if (player.isSpectator() || (config.shouldIgnoreCreative() && player.isCreative()) || !config.preventPetDamage()) return ActionResult.PASS;
-            if (entity instanceof TameableEntity tameable) {
-                if (tameable.getOwnerReference() == null) return ActionResult.PASS; // Mob is not tamed
-                if (!(tameable.isOwner(player) && config.allowOwnerDamage())) {
-                    return ActionResult.FAIL;
+            if (player.isSpectator() || (config.shouldIgnoreCreative() && player.isCreative()) || !config.preventPetDamage()) return InteractionResult.PASS;
+            if (entity instanceof TamableAnimal tameable) {
+                if (tameable.getOwnerReference() == null) return InteractionResult.PASS; // Mob is not tamed
+                if (!(tameable.isOwnedBy(player) && config.allowOwnerDamage())) {
+                    return InteractionResult.FAIL;
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, damageSource, damageAmount) -> {
             if (!config.preventPetDamage() || !config.preventPetDeath()) return true;
-            if (damageSource.isSourceCreativePlayer() && config.shouldIgnoreCreative()) return true;
-            if (entity instanceof TameableEntity tameable) {
+            if (damageSource.isCreativePlayer() && config.shouldIgnoreCreative()) return true;
+            if (entity instanceof TamableAnimal tameable) {
                 if (tameable.getOwnerReference() == null) return true; // Mob is not tamed
-                if (!(damageSource.getAttacker() instanceof PlayerEntity player && tameable.isOwner(player) && config.allowOwnerDamage())) {
+                if (!(damageSource.getEntity() instanceof Player player && tameable.isOwnedBy(player) && config.allowOwnerDamage())) {
                     // we're not allowing this death: reset health to full
                     entity.setHealth(entity.getMaxHealth());
                     if (config.applyTotemEffects()) {
-                        DeathProtectionComponent.TOTEM_OF_UNDYING.applyDeathEffects(new ItemStack(Items.TOTEM_OF_UNDYING), entity);
-                        entity.getEntityWorld().sendEntityStatus(entity, EntityStatuses.USE_TOTEM_OF_UNDYING);
+                        DeathProtection.TOTEM_OF_UNDYING.applyEffects(new ItemStack(Items.TOTEM_OF_UNDYING), entity);
+                        entity.level().broadcastEntityEvent(entity, EntityEvent.PROTECTED_FROM_DEATH);
                     }
                     return false;
                 }

@@ -2,10 +2,23 @@
   "schemaVersion": 1,
   "id": "petprotect",
   "version": "${version}",
-  "name": "petprotect",
+  "name": "PetProtect",
   "description": "Protect tamed mobs from PvP.",
-  "authors": [],
-  "contact": {},
+  "authors": [
+    {
+      "name": "sylvxa",
+      "contact": {
+        "email": "me@sylvie.lol",
+        "homepage": "https://sylvie.lol"
+      }
+    }
+  ],
+  "contact": {
+    "repo": "https://github.com/sylvxa/sswaystones",
+    "homepage": "https://modrinth.com/mod/sswaystones",
+    "issues": "https://github.com/sylvxa/sswaystones/issues",
+    "discord": "https://discord.gg/5qzrB98sBA"
+  },
   "license": "MIT",
   "icon": "assets/petprotect/icon.png",
   "entrypoints": {
@@ -18,7 +31,7 @@
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
-    "fabric": "*",
-    "minecraft": ["1.21.9", "1.21.10"]
+    "fabric-api": "*",
+    "minecraft": ">=${minecraft_version}"
   }
 }
