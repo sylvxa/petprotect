@@ -13,8 +13,12 @@ public class ConfigInstance {
             .setPrettyPrinting()
             .create();
 
+    // Something hurts pet
     @SerializedName("prevent_pet_damage")
     boolean preventPetDamage = true;
+
+    @SerializedName("only_prevent_players")
+    boolean onlyPreventPlayers = false;
 
     @SerializedName("prevent_pet_death")
     boolean preventPetDeath = true;
@@ -22,6 +26,7 @@ public class ConfigInstance {
     @SerializedName("apply_totem_effects")
     boolean applyTotemEffects = false;
 
+    // Pet hurts something
     @SerializedName("prevent_pet_attack")
     boolean preventPetAttack = true;
 
@@ -52,6 +57,10 @@ public class ConfigInstance {
 
     public boolean preventPetDamage() {
         return preventPetDamage;
+    }
+
+    public boolean onlyPreventPlayers() {
+        return onlyPreventPlayers;
     }
 
     public boolean preventPetDeath() {
