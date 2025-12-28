@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -29,7 +30,7 @@ public class PetProtect implements ModInitializer {
     public static Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static ConfigInstance config;
 
-    private static boolean shouldAllow(Entity target, @Nullable Entity attacker) {
+    public static boolean shouldAllow(Entity target, @Nullable Entity attacker) {
         if (!config.preventPetDamage() || !(target instanceof TamableAnimal tameable)) return true;
         if (!(attacker instanceof ServerPlayer) && config.onlyPreventPlayers()) return true;
 
@@ -46,10 +47,6 @@ public class PetProtect implements ModInitializer {
         File configFile = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID + ".json").toFile();
         config = ConfigInstance.fromFile(configFile);
         config.writeToFile(configFile);
-
-        AttackEntityCallback.EVENT.register((player, level, hand, entity, result) ->
-                shouldAllow(entity, player) ? InteractionResult.PASS : InteractionResult.FAIL);
-        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> shouldAllow(entity, source.getEntity()));
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, damageSource, damageAmount) -> {
             if (!config.preventPetDamage() || !config.preventPetDeath()) return true;
