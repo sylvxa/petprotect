@@ -11,7 +11,7 @@ public class PetProtectFabric implements ModInitializer {
         PetProtect.init();
 
         // Command registration is generally platform specific
-        CommandRegistrationCallback.EVENT.register((dispatcher, _, _) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, _c, _s) -> {
             PetProtectCommand.register(dispatcher);
         });
 
