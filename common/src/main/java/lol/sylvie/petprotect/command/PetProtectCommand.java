@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 
 public class PetProtectCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(Constants.MOD_ID).requires(Commands.hasPermission(Commands.LEVEL_ADMINS));
+        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(Constants.MOD_ID).requires(e -> e.hasPermission(4));
 
         LiteralArgumentBuilder<CommandSourceStack> reload = Commands.literal("reload");
 

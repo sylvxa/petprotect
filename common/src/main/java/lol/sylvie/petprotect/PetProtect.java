@@ -4,14 +4,12 @@ import lol.sylvie.petprotect.config.Configuration;
 import lol.sylvie.petprotect.platform.Services;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.DeathProtection;
 import org.jetbrains.annotations.Nullable;
 
 import static lol.sylvie.petprotect.Constants.LOG;
@@ -23,7 +21,7 @@ public class PetProtect {
         if (!CONFIG.preventPetDamage || !(target instanceof TamableAnimal tameable)) return true;
         if (!(attacker instanceof ServerPlayer) && CONFIG.onlyPreventPlayers) return true;
 
-        if (tameable.getOwnerReference() == null ||
+        if (tameable.getOwnerUUID() == null ||
                 (attacker instanceof ServerPlayer player &&                 // Player-specific checks
                 ((CONFIG.allowOwnerDamage && tameable.isOwnedBy(player)) || // Owner check
                 (CONFIG.ignoreCreative && player.isCreative()))))           // Creative check
@@ -32,15 +30,15 @@ public class PetProtect {
         return false;
     }
 
-    public static boolean shouldPreventAttack(LivingEntity owner) {
+    public static boolean shouldPreventAttack(LivingEntity owner, LivingEntity target) {
         if (owner == null || // No owner
-            owner.getLastHurtByMob() == null || !owner.getLastHurtByMob().isAlwaysTicking() // Attacker is gone
+            target == null || !target.isAlwaysTicking() // Attacker is gone or isn't a player
         ) return false;
         return PetProtect.CONFIG.preventPetAttack;
     }
 
     public static boolean shouldAllowDeath(DamageSource source, @Nullable LivingEntity entity) {
-        if (!(entity instanceof TamableAnimal tameable) || tameable.getOwnerReference() == null) return true;
+        if (!(entity instanceof TamableAnimal tameable) || tameable.getOwnerUUID() == null) return true;
 
         if (!CONFIG.preventPetDamage || !CONFIG.preventPetDeath) return true; // Mod or this specific feature is disabled
         if (source.isCreativePlayer() && CONFIG.ignoreCreative) return true;  // Death is caused by a creative player
@@ -48,8 +46,13 @@ public class PetProtect {
 
         entity.setHealth(entity.getMaxHealth());
         if (CONFIG.applyTotemEffects) {
-            DeathProtection.TOTEM_OF_UNDYING.applyEffects(new ItemStack(Items.TOTEM_OF_UNDYING), entity);
-            entity.level().broadcastEntityEvent(entity, EntityEvent.PROTECTED_FROM_DEATH);
+            // this is hardcoded in LivingEntity in 1.21.1
+            // im far too lazy to access widener it
+            entity.removeAllEffects();
+            entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
+            entity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+            entity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+            entity.level().broadcastEntityEvent(entity, (byte) 35);
         }
 
         return false;

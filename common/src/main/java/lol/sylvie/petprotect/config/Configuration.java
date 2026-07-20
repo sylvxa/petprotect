@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import lol.sylvie.petprotect.Constants;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 
