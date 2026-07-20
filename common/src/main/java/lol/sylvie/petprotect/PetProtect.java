@@ -32,9 +32,9 @@ public class PetProtect {
         return false;
     }
 
-    public static boolean shouldPreventAttack(LivingEntity owner) {
+    public static boolean shouldPreventAttack(LivingEntity owner, LivingEntity target) {
         if (owner == null || // No owner
-            owner.getLastHurtByMob() == null || !owner.getLastHurtByMob().isAlwaysTicking() // Attacker is gone
+                target == null || !target.isAlwaysTicking() // Attacker is gone or isn't a player
         ) return false;
         return PetProtect.CONFIG.preventPetAttack;
     }
