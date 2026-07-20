@@ -1,0 +1,34 @@
+{
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "${description}",
+    "authors": [
+        "${mod_author}"
+    ],
+    "contact": {
+        "repo": "https://github.com/sylvxa/petprotect",
+        "homepage": "https://modrinth.com/mod/petprotect",
+        "issues": "https://github.com/sylvxa/petprotect/issues",
+        "discord": "https://discord.gg/5qzrB98sBA"
+    },
+    "license": "${license}",
+    "icon": "icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "lol.sylvie.petprotect.PetProtectFabric"
+        ]
+    },
+    "mixins": [
+        "${mod_id}.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
+        "minecraft": ">=${minecraft_version}",
+        "java": ">=${java_version}"
+    }
+}
+  
